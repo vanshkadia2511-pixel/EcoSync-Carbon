@@ -1,0 +1,39 @@
+{
+  "name": "EcoSync - Carbon Companion",
+  "short_name": "EcoSync",
+  "description": "Track your lifestyle. Reduce your carbon impact. Join the green revolution.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f8faf8",
+  "theme_color": "#2D6A4F",
+  "categories": ["lifestyle", "productivity", "health"],
+  "lang": "en",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Log Activity",
+      "url": "/activity-log",
+      "description": "Quickly log a new activity"
+    },
+    {
+      "name": "Dashboard",
+      "url": "/dashboard",
+      "description": "View your Eco-Score"
+    }
+  ]
+}
