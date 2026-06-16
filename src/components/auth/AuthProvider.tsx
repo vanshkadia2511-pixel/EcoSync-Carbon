@@ -50,7 +50,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   }, [setUser]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading EcoSync...</div>;
+    return <div className="min-h-screen flex items-center justify-center">Loading EcoTrack...</div>;
   }
 
   return <>{children}</>;

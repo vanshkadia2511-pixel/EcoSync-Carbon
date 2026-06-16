@@ -26,16 +26,16 @@ export default function WelcomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-surface)] flex flex-col items-center justify-center p-8 text-[var(--color-on-surface)]">
+    <main className="min-h-screen bg-[var(--color-surface)] flex flex-col items-center justify-center p-8 text-[var(--color-on-surface)]">
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         {/* Left Content */}
         <div className="flex flex-col space-y-8">
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)] text-sm font-semibold px-4 py-1.5 rounded-full">
-              <span className="animate-pulse">🌱</span> Carbon Companion App
+              <span className="animate-pulse" aria-hidden="true">🌱</span> Carbon Companion App
             </div>
             <h1 className="text-5xl lg:text-7xl font-bold tracking-tight text-[var(--color-primary)]">
-              EcoSync
+              EcoTrack
             </h1>
             <p className="text-xl lg:text-2xl text-[var(--color-on-surface-variant)] max-w-lg leading-relaxed">
               Track your lifestyle. Reduce your carbon impact.
@@ -64,9 +64,10 @@ export default function WelcomePage() {
           </div>
           <button
             onClick={activateDemo}
+            aria-label="Load demo mode and explore Aarav's sustainability journey"
             className="inline-flex items-center justify-center gap-2 bg-[var(--color-surface-container-low)] border-2 border-dashed border-[var(--color-outline)] text-[var(--color-on-surface-variant)] px-6 py-3 rounded-full font-semibold text-base hover:bg-[var(--color-surface-container)] hover:text-[var(--color-on-surface)] transition-all w-fit"
           >
-            <span>⚡</span> Load Demo — See Aarav's Journey
+            <span aria-hidden="true">⚡</span> Load Demo — See Aarav's Journey
           </button>
         </div>
 
@@ -127,6 +128,6 @@ export default function WelcomePage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

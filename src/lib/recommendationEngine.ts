@@ -53,46 +53,28 @@ export const generateRecommendations = (highestCategory: ActivityCategory): Reco
   return recommendations;
 };
 
-// V2 Feature: Dynamic LLM-driven Coaching
 export const generateLLMRecommendations = async (
   recentActivities: Activity[],
   currentEcoScore: number
 ): Promise<Recommendation[]> => {
-  // In a real application, this would securely call an LLM API (e.g., Gemini)
-  // with the user's recent context to generate hyper-personalized coaching.
-  
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Mocking an intelligent response based on the presence of certain activities
-      const highEmissionActivities = recentActivities.filter(a => a.emissionKg > 5);
-      
-      if (highEmissionActivities.length > 0) {
-        resolve([
-          {
-            id: `llm_rec_${Date.now()}`,
-            title: 'Target Your Highest Emitters',
-            category: highEmissionActivities[0].category,
-            description: `I noticed your recent ${highEmissionActivities[0].category.toLowerCase()} activity had a high carbon cost. Let's work on exploring greener alternatives this week!`,
-            estimatedSavingKg: highEmissionActivities[0].emissionKg * 0.5,
-            difficulty: 'Hard',
-            moneySaving: 15.0,
-            status: 'Pending'
-          }
-        ]);
-      } else {
-        resolve([
-          {
-            id: `llm_rec_${Date.now()}_great`,
-            title: 'Keep Up the Great Work!',
-            category: 'General',
-            description: `Your Eco-Score of ${currentEcoScore} is looking fantastic! No major red flags this week. Challenge yourself to a zero-waste day tomorrow.`,
-            estimatedSavingKg: 1.0,
-            difficulty: 'Medium',
-            moneySaving: 5.0,
-            status: 'Pending'
-          }
-        ]);
-      }
-    }, 1500);
-  });
+  try {
+    const response = await fetch('/api/coach', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ recentActivities, currentEcoScore })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch recommendations');
+    }
+
+    const data = await response.json();
+    return data.recommendations || [];
+  } catch (error) {
+    console.error('Error fetching LLM recommendations:', error);
+    // Fallback if API fails
+    return [];
+  }
 };

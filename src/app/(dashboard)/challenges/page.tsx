@@ -1,15 +1,43 @@
 'use client';
 
+import { useState } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 
 export default function ChallengesPage() {
   const challenges = useAppStore(state => state.challenges);
+  const setChallenges = useAppStore(state => state.setChallenges);
   
+  const [loading, setLoading] = useState(false);
+
+  const generateAIChallenge = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/challenge', { method: 'POST' });
+      const data = await res.json();
+      if (data.challenge) {
+        setChallenges([data.challenge, ...challenges]);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="p-8 max-w-5xl mx-auto space-y-8 animate-fade-in-up">
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold text-[var(--color-primary)] mb-2">Challenges & Missions</h1>
-        <p className="text-[var(--color-on-surface-variant)] text-lg">Join community challenges and earn bonus Seeds.</p>
+      <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-4xl font-bold text-[var(--color-primary)] mb-2">Challenges & Missions</h1>
+          <p className="text-[var(--color-on-surface-variant)] text-lg">Join community challenges and earn bonus Seeds.</p>
+        </div>
+        <button 
+          onClick={generateAIChallenge}
+          disabled={loading}
+          className="bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+        >
+          {loading ? '✨ Generating...' : '✨ Generate AI Challenge'}
+        </button>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

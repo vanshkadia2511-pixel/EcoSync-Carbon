@@ -77,7 +77,14 @@ export default function OnboardingPage() {
             <span>Step {currentStep + 1} of {questions.length}</span>
             <span>{Math.round(progress)}%</span>
           </div>
-          <div className="w-full bg-[var(--color-surface-container-low)] rounded-full h-3">
+          <div
+            className="w-full bg-[var(--color-surface-container-low)] rounded-full h-3"
+            role="progressbar"
+            aria-valuenow={Math.round(progress)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`Onboarding progress: Step ${currentStep + 1} of ${questions.length}`}
+          >
             <div 
               className="bg-[var(--color-secondary)] h-3 rounded-full transition-all duration-500 ease-out" 
               style={{ width: `${progress}%` }}
@@ -85,38 +92,48 @@ export default function OnboardingPage() {
           </div>
         </div>
 
-        {/* Question */}
-        <div className="text-center mb-12 animate-fade-in-up">
-          <h2 className="text-3xl font-bold text-[var(--color-primary)] mb-4">{currentQ.question}</h2>
-        </div>
+        {/* Question as fieldset/legend for radiogroup semantics */}
+        <fieldset className="border-0 p-0 m-0 mb-12 animate-fade-in-up">
+          <legend className="text-3xl font-bold text-[var(--color-primary)] mb-4 w-full text-center">
+            {currentQ.question}
+          </legend>
 
-        {/* Options */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
-          {currentQ.options.map((opt) => {
-            const isSelected = answers[currentQ.id] === opt.value;
-            return (
-              <button
-                key={opt.value}
-                onClick={() => handleSelect(opt.value)}
-                className={`
-                  flex flex-col items-center justify-center p-6 rounded-2xl border-2 transition-all duration-200
-                  ${isSelected 
-                    ? 'border-[var(--color-secondary)] bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)] shadow-md' 
-                    : 'border-[var(--color-surface-container)] hover:border-[var(--color-secondary)] hover:bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)]'
-                  }
-                `}
-              >
-                <span className="text-4xl mb-3">{opt.icon}</span>
-                <span className="font-semibold text-lg">{opt.label}</span>
-              </button>
-            );
-          })}
-        </div>
+          {/* Options as radio group */}
+          <div
+            role="radiogroup"
+            aria-labelledby={`question-${currentQ.id}`}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8"
+          >
+            {currentQ.options.map((opt) => {
+              const isSelected = answers[currentQ.id] === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={isSelected}
+                  onClick={() => handleSelect(opt.value)}
+                  className={`
+                    flex flex-col items-center justify-center p-6 rounded-2xl border-2 transition-all duration-200
+                    ${isSelected 
+                      ? 'border-[var(--color-secondary)] bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)] shadow-md' 
+                      : 'border-[var(--color-surface-container)] hover:border-[var(--color-secondary)] hover:bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)]'
+                    }
+                  `}
+                >
+                  <span className="text-4xl mb-3" aria-hidden="true">{opt.icon}</span>
+                  <span className="font-semibold text-lg">{opt.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
 
         {/* Actions */}
         <div className="flex justify-between items-center pt-8 border-t border-[var(--color-surface-container)]">
           <button 
             onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+            aria-label="Go back to previous step"
             className={`px-6 py-3 font-semibold text-[var(--color-outline)] hover:text-[var(--color-primary)] transition-colors ${currentStep === 0 ? 'invisible' : ''}`}
           >
             Back
@@ -125,6 +142,7 @@ export default function OnboardingPage() {
           <button 
             onClick={handleNext}
             disabled={!answers[currentQ.id]}
+            aria-disabled={!answers[currentQ.id]}
             className={`
               px-10 py-4 rounded-full font-semibold text-lg transition-all
               ${answers[currentQ.id] 

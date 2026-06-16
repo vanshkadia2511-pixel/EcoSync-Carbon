@@ -23,7 +23,10 @@ export default function CategoryChart({ data }: { data: { name: string; value: n
         </Pie>
         <Tooltip 
           contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
-          formatter={(value: any) => [`${Number(value).toFixed(1)} kg`, 'Emissions']}
+          formatter={(value: number | string | readonly (number | string)[] | undefined) => {
+            const numValue = Array.isArray(value) ? value[0] : value;
+            return [`${Number(numValue || 0).toFixed(1)} kg`, 'Emissions'];
+          }}
         />
       </PieChart>
     </ResponsiveContainer>

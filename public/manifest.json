@@ -1,6 +1,6 @@
 {
-  "name": "EcoSync - Carbon Companion",
-  "short_name": "EcoSync",
+  "name": "EcoTrack - Carbon Companion",
+  "short_name": "EcoTrack",
   "description": "Track your lifestyle. Reduce your carbon impact. Join the green revolution.",
   "start_url": "/dashboard",
   "display": "standalone",

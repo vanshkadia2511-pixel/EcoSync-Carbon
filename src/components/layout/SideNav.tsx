@@ -14,6 +14,7 @@ const navItems = [
   { name: 'Leaderboard', href: '/leaderboard', icon: '🥇' },
   { name: 'Passive Tracking', href: '/tracking', icon: '📍' },
   { name: 'Profile', href: '/profile', icon: '👤' },
+  { name: 'Analytics', href: '/analytics', icon: '📈' },
 ];
 
 export default function SideNav() {
@@ -21,9 +22,9 @@ export default function SideNav() {
   const user = useAppStore((state) => state.user);
 
   return (
-    <aside className="w-64 bg-white shadow-[8px_0_30px_rgb(0,0,0,0.02)] flex flex-col h-screen sticky top-0 z-50 relative">
+    <aside className="w-64 bg-white shadow-[8px_0_30px_rgb(0,0,0,0.02)] hidden md:flex flex-col h-screen sticky top-0 z-50" aria-label="Main navigation">
       <div className="p-8 pb-4">
-        <h1 className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] tracking-tight">EcoSync</h1>
+        <h1 className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] tracking-tight">EcoTrack</h1>
       </div>
       
       <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
@@ -33,13 +34,14 @@ export default function SideNav() {
             <Link
               key={item.name}
               href={item.href}
+              aria-current={isActive ? 'page' : undefined}
               className={`group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 font-semibold text-[15px] ${
                 isActive 
                   ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] text-white shadow-md' 
                   : 'text-[var(--color-on-surface-variant)] hover:bg-gray-50 hover:text-[var(--color-on-surface)] hover:-translate-y-0.5'
               }`}
             >
-              <span className={`text-lg transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}>{item.icon}</span>
+              <span className={`text-lg transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} aria-hidden="true">{item.icon}</span>
               {item.name}
             </Link>
           );

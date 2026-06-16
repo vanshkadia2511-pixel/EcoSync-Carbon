@@ -1,11 +1,16 @@
 'use client';
 
 import { useAppStore } from '@/store/useAppStore';
-
+import { checkBadges } from '@/lib/gamificationEngine';
+import { ElectricityFactors, Region } from '@/lib/carbonFactors';
 import { useState } from 'react';
 
 export default function ProfilePage() {
   const user = useAppStore(state => state.user);
+  const activities = useAppStore(state => state.activities);
+  const region = useAppStore(state => state.region);
+  const setRegion = useAppStore(state => state.setRegion);
+  
   const [toggles, setToggles] = useState<Record<string, boolean>>({
     'Location Tracking': true,
     'Spending Tracking': false,
@@ -17,6 +22,16 @@ export default function ProfilePage() {
   };
 
   if (!user) return null;
+
+  const friendsInvited = 1; // Mock data for now
+  const unlockedBadges = checkBadges(activities.length, user.seeds, friendsInvited);
+
+  const ALL_BADGES = [
+    { id: 'Consistent Tracker', icon: '🌱', desc: '10 Logs' },
+    { id: 'Seed Hoarder', icon: '💰', desc: '1000+ Seeds' },
+    { id: 'Social Butterfly', icon: '🦋', desc: '1 Friend' },
+    { id: 'Eco Ambassador', icon: '🌍', desc: '5 Friends' },
+  ];
 
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-8 animate-fade-in-up pb-24">
@@ -58,19 +73,25 @@ export default function ProfilePage() {
             <span className="text-2xl">🏆</span> Achievements
           </h2>
           <div className="flex flex-wrap gap-4">
-            <div className="group flex flex-col items-center justify-center p-5 bg-gradient-to-br from-[var(--color-surface-container-low)] to-white rounded-3xl w-[100px] shadow-sm border border-gray-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-pointer">
-              <span className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">🌱</span>
-              <span className="text-[10px] font-bold text-center text-[var(--color-on-surface-variant)] uppercase tracking-wider">First Log</span>
-            </div>
-            <div className="group flex flex-col items-center justify-center p-5 bg-gradient-to-br from-orange-50 to-amber-50 rounded-3xl w-[100px] shadow-sm border border-orange-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-pointer relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-              <span className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">🔥</span>
-              <span className="text-[10px] font-bold text-center text-orange-700 uppercase tracking-wider">7-Day Streak</span>
-            </div>
-            <div className="flex flex-col items-center justify-center p-5 bg-gray-50 rounded-3xl w-[100px] border border-gray-100 opacity-50 grayscale transition-all duration-300 hover:grayscale-0 hover:opacity-100 cursor-help">
-              <span className="text-4xl mb-3">🚲</span>
-              <span className="text-[10px] font-bold text-center text-gray-500 uppercase tracking-wider">Bike Hero</span>
-            </div>
+            {ALL_BADGES.map(badge => {
+              const isUnlocked = unlockedBadges.includes(badge.id);
+              
+              if (isUnlocked) {
+                return (
+                  <div key={badge.id} className="group flex flex-col items-center justify-center p-5 bg-gradient-to-br from-[var(--color-surface-container-low)] to-white rounded-3xl w-[100px] shadow-sm border border-[var(--color-primary)] hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-pointer">
+                    <span className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">{badge.icon}</span>
+                    <span className="text-[10px] font-bold text-center text-[var(--color-on-surface-variant)] uppercase tracking-wider">{badge.desc}</span>
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={badge.id} className="flex flex-col items-center justify-center p-5 bg-gray-50 rounded-3xl w-[100px] border border-gray-100 opacity-50 grayscale transition-all duration-300 hover:grayscale-0 hover:opacity-100 cursor-help">
+                    <span className="text-4xl mb-3">{badge.icon}</span>
+                    <span className="text-[10px] font-bold text-center text-gray-500 uppercase tracking-wider">Locked</span>
+                  </div>
+                );
+              }
+            })}
           </div>
         </div>
 
@@ -113,6 +134,29 @@ export default function ProfilePage() {
         </div>
       </div>
       
+      {/* Region Selector */}
+      <div className="bg-white p-8 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100/50">
+        <h2 className="text-xl font-extrabold text-[var(--color-on-surface)] mb-2 flex items-center gap-2">
+          <span className="text-2xl">🌍</span> Your Region
+        </h2>
+        <p className="text-sm text-[var(--color-outline)] mb-6">Adjusts electricity emission factors for accurate calculations.</p>
+        <div className="flex flex-wrap gap-3">
+          {Object.entries(ElectricityFactors).map(([r, factor]) => (
+            <button
+              key={r}
+              onClick={() => setRegion(r as Region)}
+              className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 ${
+                region === r
+                  ? 'bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-primary)] text-white shadow-md'
+                  : 'bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)]'
+              }`}
+            >
+              {r} <span className="opacity-70 text-xs">({factor} kg/kWh)</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="flex justify-center pt-8">
         <button 
           onClick={async () => {

@@ -4,8 +4,11 @@ import { useState } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { Activity } from '@/types';
 import { calculateTransportEmission } from '@/lib/calculateEmission';
+import { CarbonFactors } from '@/lib/carbonFactors';
 
-const DETECTED_TRIPS = [
+type TransportMode = keyof typeof CarbonFactors.transport;
+
+const DETECTED_TRIPS: { id: string; icon: string; mode: TransportMode; label: string; distance: number; time: string; from: string; to: string }[] = [
   { id: 'trip_1', icon: '🚗', mode: 'car', label: 'Car trip', distance: 12, time: '8:32 AM', from: 'Home', to: 'Office' },
   { id: 'trip_2', icon: '🚌', mode: 'bus', label: 'Bus ride', distance: 7, time: '6:15 PM', from: 'Office', to: 'Mall' },
   { id: 'trip_3', icon: '🚆', mode: 'train', label: 'Metro trip', distance: 18, time: '9:05 AM', from: 'Station A', to: 'Station C' },
@@ -20,7 +23,7 @@ export default function TravelDetectorMock() {
     const trip = trips.find(t => t.id === tripId);
     if (!trip) return;
 
-    const emissionKg = calculateTransportEmission(trip.mode as any, trip.distance);
+    const emissionKg = calculateTransportEmission(trip.mode, trip.distance);
     const activity: Activity = {
       id: `auto_${tripId}`,
       category: 'Transport',
@@ -72,7 +75,7 @@ export default function TravelDetectorMock() {
                 </p>
               </div>
               <div className="text-right text-xs font-semibold text-[var(--color-primary)]">
-                {calculateTransportEmission(trip.mode as any, trip.distance).toFixed(1)} kg CO₂
+                {calculateTransportEmission(trip.mode, trip.distance).toFixed(1)} kg CO₂
               </div>
             </div>
 

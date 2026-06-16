@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { User, Activity, Recommendation, Challenge, LeaderboardUser } from '../types';
+import { Region } from '../lib/carbonFactors';
 
 export interface AppState {
   user: User | null;
@@ -7,6 +8,7 @@ export interface AppState {
   recommendations: Recommendation[];
   challenges: Challenge[];
   leaderboard: LeaderboardUser[];
+  region: Region;
   
   setUser: (user: User | null) => void;
   updateEcoScore: (score: number) => void;
@@ -17,6 +19,7 @@ export interface AppState {
   setChallenges: (challenges: Challenge[]) => void;
   updateChallengeProgress: (challengeId: string, progress: number) => void;
   setLeaderboard: (leaderboard: LeaderboardUser[]) => void;
+  setRegion: (region: Region) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -25,6 +28,7 @@ export const useAppStore = create<AppState>((set) => ({
   recommendations: [],
   challenges: [],
   leaderboard: [],
+  region: 'Global',
 
   setUser: (user) => set({ user }),
   
@@ -52,4 +56,5 @@ export const useAppStore = create<AppState>((set) => ({
     })),
     
   setLeaderboard: (leaderboard) => set({ leaderboard }),
+  setRegion: (region) => set({ region }),
 }));

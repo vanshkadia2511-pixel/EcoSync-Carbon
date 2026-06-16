@@ -25,7 +25,7 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
         </div>
       </div>
       <div className="text-right">
-        <p className="font-bold text-sm text-ecosync-primary">{activity.emissionKg.toFixed(1)} kg</p>
+        <p className="font-bold text-sm text-ecotrack-primary">{activity.emissionKg.toFixed(1)} kg</p>
         <p className="text-[10px] text-slate-400">CO2e</p>
       </div>
     </div>

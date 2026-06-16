@@ -3,7 +3,7 @@ import { doc, updateDoc, increment } from 'firebase/firestore';
 
 export const generateInviteLink = (userId: string): string => {
   // Generates a unique invite URL linking back to the current user
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ecosync.app';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ecotrack.app';
   return `${baseUrl}/invite?ref=${userId}`;
 };
 

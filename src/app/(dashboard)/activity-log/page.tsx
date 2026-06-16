@@ -6,6 +6,9 @@ import { Activity } from '@/types';
 import { calculateTransportEmission } from '@/lib/calculateEmission';
 import { calculateEcoScore } from '@/lib/calculateEcoScore';
 import { saveActivity } from '@/lib/db';
+import { CarbonFactors } from '@/lib/carbonFactors';
+
+type TransportMode = keyof typeof CarbonFactors.transport;
 
 const CATEGORIES = ['Transport', 'Food', 'Energy', 'Shopping', 'Waste'];
 
@@ -17,15 +20,14 @@ export default function ActivityLogPage() {
   const updateEcoScore = useAppStore(state => state.updateEcoScore);
   const user = useAppStore(state => state.user);
 
-  const [mode, setMode] = useState('car');
+  const [mode, setMode] = useState<TransportMode>('car');
   const [distance, setDistance] = useState('');
 
   const handleAddActivity = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!distance) return;
 
-    // Typecast mode to match the expected type
-    const emissionKg = calculateTransportEmission(mode as any, Number(distance));
+    const emissionKg = calculateTransportEmission(mode, Number(distance));
     const newActivity: Activity = {
       id: Math.random().toString(36).substr(2, 9),
       category: 'Transport',
@@ -100,7 +102,7 @@ export default function ActivityLogPage() {
                       <button
                         key={m.id}
                         type="button"
-                        onClick={() => setMode(m.id)}
+                      onClick={() => setMode(m.id as TransportMode)}
                         className={`flex flex-col items-center justify-center py-4 rounded-2xl border-2 transition-all duration-300 ${
                           mode === m.id 
                             ? 'border-[var(--color-secondary)] bg-emerald-50 text-[var(--color-secondary)] shadow-sm scale-[1.02]' 
@@ -115,14 +117,18 @@ export default function ActivityLogPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-xs font-bold text-[var(--color-outline)] uppercase tracking-widest">Distance (km)</label>
+                   <label htmlFor="distance-input" className="text-xs font-bold text-[var(--color-outline)] uppercase tracking-widest">Distance (km)</label>
                   <div className="relative">
                     <input 
+                      id="distance-input"
                       type="number" 
+                      min="0"
+                      max="10000"
                       value={distance}
                       onChange={(e) => setDistance(e.target.value)}
                       className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-5 py-4 font-bold text-lg text-[var(--color-on-surface)] focus:bg-white focus:border-[var(--color-primary)] focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all duration-300"
                       placeholder="e.g. 15"
+                      aria-label="Distance in kilometres"
                     />
                     <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
                       <span className="text-gray-400 font-bold">km</span>

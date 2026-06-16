@@ -3,7 +3,7 @@ import { User, Activity, Challenge, LeaderboardUser, Recommendation } from '../t
 export const demoUser: User = {
   id: 'demo_aarav_123',
   displayName: 'Aarav',
-  email: 'aarav.demo@ecosync.app',
+  email: 'aarav.demo@ecotrack.app',
   ecoScore: 68,
   weeklyBudgetKg: 40,
   currentStreak: 7,

@@ -7,9 +7,9 @@ export default function Header() {
   if (!user) return null;
 
   return (
-    <header className="bg-ecosync-primary text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center rounded-b-xl">
+    <header className="bg-ecotrack-primary text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center rounded-b-xl">
       <div>
-        <h1 className="text-xl font-bold tracking-tight">EcoSync</h1>
+        <h1 className="text-xl font-bold tracking-tight">EcoTrack</h1>
         <p className="text-xs opacity-90 mt-0.5">Level {user.level}</p>
       </div>
       <div className="flex items-center gap-4 bg-white/20 px-3 py-1.5 rounded-full">

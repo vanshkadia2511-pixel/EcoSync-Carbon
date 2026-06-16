@@ -1,9 +1,35 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store/useAppStore';
+import { generateLLMRecommendations } from '@/lib/recommendationEngine';
+import { Recommendation } from '@/types';
 
 export default function CoachPage() {
-  const recommendations = useAppStore(state => state.recommendations);
+  const user = useAppStore(state => state.user);
+  const activities = useAppStore(state => state.activities);
+  
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchCoach() {
+      try {
+        setLoading(true);
+        setError(null);
+        // Call the AI endpoint
+        const recs = await generateLLMRecommendations(activities, user?.ecoScore || 0);
+        setRecommendations(recs);
+      } catch (err) {
+        setError("Oops! My AI circuits are taking a break right now. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchCoach();
+  }, [activities, user?.ecoScore]);
   
   return (
     <div className="p-8 max-w-4xl mx-auto space-y-8 animate-fade-in-up">
@@ -18,7 +44,21 @@ export default function CoachPage() {
       </header>
 
       <div className="space-y-6">
-        {recommendations.map(rec => (
+        {loading && (
+          <div className="text-center py-20 text-[var(--color-outline)] animate-pulse">
+            <span className="text-4xl block mb-4">⏳</span>
+            <p className="text-xl">Analyzing your footprint and consulting the AI...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-2xl flex items-center gap-4">
+            <span className="text-3xl">⚠️</span>
+            <p className="text-lg font-medium">{error}</p>
+          </div>
+        )}
+
+        {!loading && !error && recommendations.map(rec => (
           <div key={rec.id} className="bg-white p-8 rounded-3xl shadow-sm border border-[var(--color-surface-container)] flex flex-col md:flex-row gap-8">
             <div className="flex-1 space-y-4">
               <div className="flex items-center gap-3">
@@ -64,7 +104,7 @@ export default function CoachPage() {
           </div>
         ))}
 
-        {recommendations.length === 0 && (
+        {!loading && !error && recommendations.length === 0 && (
           <div className="text-center py-20 text-[var(--color-outline)]">
             <span className="text-4xl block mb-4">✨</span>
             <p className="text-xl">You're doing great! No new recommendations right now.</p>
